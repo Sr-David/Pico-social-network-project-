@@ -1,5 +1,4 @@
 const items = db.collection("items");
-const categories = db.collection("categories");
 
 function addItem(doc) {
     add(items, doc)
@@ -43,9 +42,6 @@ function editItem(id) {
 
 function loadItems() {
     selectAll(items)
-    // selectAll(items, "title")
-    // selectWhere(items, "title", "==", "Firma")
-    // selectLike(items, "title", "F")
         .then((arrayItems) => {
             document.getElementById("listItems").innerHTML = `<tr>
 																<th></th>
@@ -53,30 +49,24 @@ function loadItems() {
 																<th>Contingut</th>
 																<th></th>
 															</tr>`;
-            arrayItems.forEach((docItem) => {
+            arrayItems.forEach((doc) => {
                 let image = "";
-                if (docItem.data().image != null) {
-                    image = `<img src="${docItem.data().image}" class="rounded" style="max-width: 100px; max-height: 100px;" "alt="${docItem.data().title}">`;
+                if (doc.data().image != null) {
+                    image = `<img src="${doc.data().image}" class="rounded" style="max-width: 100px; max-height: 100px;" "alt="${doc.data().title}">`;
                 }
-                selectById(categories, docItem.data().category.id)
-                    .then((docCategory) => {
-                        document.getElementById("listItems").innerHTML += `<tr>
-                                                                        <td>${image}</td>
-                                                                        <td>${docItem.data().title} - ${docCategory.data().name}</td>
-                                                                        <td>${docItem.data().content}</td>
-                                                                        <td>
-                                                                            <button type="button" class="btn btn-danger float-right" onclick="eliminar('${docItem.id}', '${docItem.data().image}')">
-                                                                                Eliminar
-                                                                            </button>
-                                                                            <button type="button" class="btn btn-primary mr-2 float-right" onclick="editItem('${docItem.id}')">
-                                                                                Editar
-                                                                            </button>
-                                                                        </td>
-                                                                    </tr>`;
-                    })
-                    .catch(() => {
-                        showAlert("Error al mostrar els elements", "alert-danger");
-                    });
+                document.getElementById("listItems").innerHTML += `<tr>
+																	<td>${image}</td>
+																	<td>${doc.data().title}</td>
+																	<td>${doc.data().content}</td>
+																	<td>
+																		<button type="button" class="btn btn-danger float-right" onclick="eliminar('${doc.id}', '${doc.data().image}')">
+																			Eliminar
+																		</button>
+																		<button type="button" class="btn btn-primary mr-2 float-right" onclick="editItem('${doc.id}')">
+																			Editar
+																		</button>
+																	</td>
+																</tr>`;
             });
         })
         .catch(() => {
